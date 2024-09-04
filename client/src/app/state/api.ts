@@ -8,27 +8,27 @@ export interface Product {
   stockQuantity: number;
 }
 
-export interface salesSummary {
+export interface SalesSummary {
   salesSummaryId: string;
   totalValue: number;
   changePercentage?: number;
   date: string;
 }
 
-export interface purchaseSummary {
+export interface PurchaseSummary {
   purchaseSummaryId: string;
   totalPurchased: number;
   changePercentage?: number;
   date: string;
 }
 
-export interface expensesSummary {
+export interface ExpensesSummary {
   expensesSummaryId: string;
   totalExpenses: number;
   date: string;
 }
 
-export interface expenseByCategorySummary {
+export interface ExpenseByCategorySummary {
   expenseByCategorySummaryId: string;
   category: string;
   amount: string;
@@ -37,10 +37,10 @@ export interface expenseByCategorySummary {
 
 export interface DashboardMetrics {
   popularProducts: Product[];
-  salesSummary: salesSummary[];
-  purchaseSummary: purchaseSummary[];
-  expensesSummary: expensesSummary[];
-  expenseByCategorySummary: expenseByCategorySummary[];
+  salesSummary: SalesSummary[];
+  purchaseSummary: PurchaseSummary[];
+  expenseSummary: ExpensesSummary[];
+  expenseByCategorySummary: ExpenseByCategorySummary[];
 }
 
 export const api = createApi({

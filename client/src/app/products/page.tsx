@@ -77,6 +77,8 @@ const Products = () => {
           ))
         )}
       </div>
+
+      {/*  MODAL */}
     </div>
   );
 };

@@ -10,6 +10,7 @@ import morgan from 'morgan';
 import dashboardRoutes from './routes/dashboardRoutes';
 import productRoutes from './routes/productRoutes';
 import userRoutes from './routes/userRoutes';
+import expenseRoutes from './routes/expenseRoutes';
 
 /* CONFIGURATIONS */
 
@@ -24,9 +25,10 @@ app.use(cors());
 
 /* ROUTES */
 
-app.use('/dashboard', dashboardRoutes);
-app.use('/products', productRoutes);
-app.use('/users', userRoutes);
+app.use('/dashboard', dashboardRoutes); //http://localhost:3000/dashboard
+app.use('/products', productRoutes); //http://localhost:3000/products
+app.use('/users', userRoutes); //http://localhost:3000/users
+app.use('/expenses', expenseRoutes); //http://localhost:3000/expenses
 
 /*  SERVER */
 

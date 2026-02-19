@@ -74,10 +74,10 @@ const Expenses = () => {
     return Object.values(filtered);
   }, [expenses, selectedCategory, startDate, endDate]);
 
-  const categories = useMemo(
-    () => ['All', ...new Set(expenses.map((item) => item.category))],
-    [expenses]
-  );
+  const categories = useMemo(() => {
+    const unique = Array.from(new Set(expenses.map((item) => item.category)));
+    return ['All', ...unique];
+  }, [expenses]);
 
   const classNames = {
     label: 'block text-sm font-medium text-gray-700',

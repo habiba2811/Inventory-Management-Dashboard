@@ -13,7 +13,7 @@ import {
 
 const CardPurchaseSummary = () => {
   const { data, isLoading } = useGetDashboardMetricsQuery();
-  const purchaseData = data?.purchaseSummary || [];
+  const purchaseData = useMemo(() => data?.purchaseSummary || [], [data]);
   const [timeframe, setTimeframe] = useState<'7' | '14' | '30'>('14');
 
   const filteredPurchaseData = useMemo(() => {

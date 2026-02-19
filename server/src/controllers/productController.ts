@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
+import { randomUUID } from 'crypto';
 
 const prisma = new PrismaClient();
 
@@ -29,7 +30,7 @@ export const createProduct = async (
     const { productId, name, price, rating, stockQuantity } = req.body;
     const product = await prisma.products.create({
       data: {
-        productId,
+        productId: productId || randomUUID(),
         name,
         price,
         rating,

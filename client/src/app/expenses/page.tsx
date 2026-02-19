@@ -17,13 +17,15 @@ import {
 
 type AggregatedDataItem = {
   name: string;
-  color?: string;
+  color: string;
   amount: number;
 };
 
 type AggregatedData = {
   [category: string]: AggregatedDataItem;
 };
+
+const categoryPalette = ['#2563EB', '#0891B2', '#16A34A', '#D97706', '#DB2777'];
 
 const Expenses = () => {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -58,17 +60,24 @@ const Expenses = () => {
       .reduce((acc: AggregatedData, data: ExpenseByCategorySummary) => {
         const amount = parseInt(data.amount);
         if (!acc[data.category]) {
-          acc[data.category] = { name: data.category, amount: 0 };
-          acc[data.category].color = `#${Math.floor(
-            Math.random() * 16777215
-          ).toString(16)}`;
-          acc[data.category].amount += amount;
+          acc[data.category] = {
+            name: data.category,
+            amount: 0,
+            color:
+              categoryPalette[Object.keys(acc).length % categoryPalette.length],
+          };
         }
+        acc[data.category].amount += amount;
         return acc;
       }, {});
 
     return Object.values(filtered);
   }, [expenses, selectedCategory, startDate, endDate]);
+
+  const categories = useMemo(
+    () => ['All', ...new Set(expenses.map((item) => item.category))],
+    [expenses]
+  );
 
   const classNames = {
     label: 'block text-sm font-medium text-gray-700',
@@ -89,7 +98,7 @@ const Expenses = () => {
   }
 
   return (
-    <div>
+    <div data-testid="expenses-page">
       {/* HEADER */}
       <div className="mb-5">
         <Header name="Expenses" />
@@ -114,13 +123,13 @@ const Expenses = () => {
                 id="category"
                 name="category"
                 className={classNames.selectInput}
-                defaultValue="All"
+                value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
+                data-testid="expenses-category-filter"
               >
-                <option>All</option>
-                <option>Office</option>
-                <option>Professional</option>
-                <option>Salaries</option>
+                {categories.map((category) => (
+                  <option key={category}>{category}</option>
+                ))}
               </select>
             </div>
             {/* START DATE */}
@@ -133,7 +142,9 @@ const Expenses = () => {
                 id="start-date"
                 name="start-date"
                 className={classNames.selectInput}
+                value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
+                data-testid="expenses-start-date-filter"
               />
             </div>
             {/* END DATE */}
@@ -146,14 +157,28 @@ const Expenses = () => {
                 id="end-date"
                 name="end-date"
                 className={classNames.selectInput}
+                value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
+                data-testid="expenses-end-date-filter"
               />
             </div>
+            <button
+              className="w-full bg-gray-800 text-white rounded-md py-2 text-sm hover:bg-gray-900"
+              onClick={() => {
+                setSelectedCategory('All');
+                setStartDate('');
+                setEndDate('');
+                setActiveIndex(0);
+              }}
+              data-testid="expenses-reset-filters"
+            >
+              Reset Filters
+            </button>
           </div>
         </div>
         {/* PIE CHART */}
         <div className="flex-grow bg-white shadow rounded-lg p-4 md:p-6">
-          <ResponsiveContainer width="100%" height={400}>
+          <ResponsiveContainer width="100%" height={320}>
             <PieChart>
               <Pie
                 data={aggregatedData}
@@ -172,6 +197,7 @@ const Expenses = () => {
                       fill={
                         index === activeIndex ? 'rgb(29, 78, 216)' : entry.color
                       }
+                      data-testid={`expenses-slice-${index}`}
                     />
                   )
                 )}
@@ -180,6 +206,23 @@ const Expenses = () => {
               <Legend />
             </PieChart>
           </ResponsiveContainer>
+          <div className="mt-4 border-t pt-3">
+            <p className="text-sm font-semibold text-gray-700 mb-2">Category Totals</p>
+            <ul className="space-y-1" data-testid="expenses-category-totals">
+              {aggregatedData.map((item) => (
+                <li key={item.name} className="flex justify-between text-sm">
+                  <button
+                    className="text-left text-blue-700 hover:underline"
+                    onClick={() => setSelectedCategory(item.name)}
+                    data-testid={`expenses-category-chip-${item.name.toLowerCase().replace(/\s+/g, '-')}`}
+                  >
+                    {item.name}
+                  </button>
+                  <span className="font-medium">${item.amount.toLocaleString('en-US')}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </div>
     </div>

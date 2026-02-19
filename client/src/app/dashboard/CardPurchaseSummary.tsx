@@ -1,7 +1,7 @@
 import { useGetDashboardMetricsQuery } from '@/app/state/api';
 import { TrendingDown, TrendingUp } from 'lucide-react';
 import numeral from 'numeral';
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   Area,
   AreaChart,
@@ -14,22 +14,38 @@ import {
 const CardPurchaseSummary = () => {
   const { data, isLoading } = useGetDashboardMetricsQuery();
   const purchaseData = data?.purchaseSummary || [];
+  const [timeframe, setTimeframe] = useState<'7' | '14' | '30'>('14');
 
-  const lastDataPoint = purchaseData[purchaseData.length - 1] || null;
+  const filteredPurchaseData = useMemo(() => {
+    const days = Number(timeframe);
+    return purchaseData.slice(-days);
+  }, [purchaseData, timeframe]);
+
+  const lastDataPoint = filteredPurchaseData[filteredPurchaseData.length - 1] || null;
 
   return (
-    <div className="flex flex-col justify-between row-span-2 xl:row-span-3 col-span-1 md:col-span-2 xl:col-span-1 bg-white shadow-md rounded-2xl">
+    <div className="flex flex-col justify-between row-span-2 xl:row-span-3 col-span-1 md:col-span-2 xl:col-span-1 bg-white shadow-md rounded-2xl" data-testid="purchase-summary-card">
       {isLoading ? (
         <div className="m-5">Loading...</div>
       ) : (
         <>
           {/* HEADER */}
-          <div>
-            <h2 className="text-lg font-semibold mb-2 px-7 pt-5">
+          <div className="flex items-center justify-between px-7 pt-5 mb-2">
+            <h2 className="text-lg font-semibold">
               Purchase Summary
             </h2>
-            <hr />
+            <select
+              value={timeframe}
+              onChange={(e) => setTimeframe(e.target.value as '7' | '14' | '30')}
+              className="text-xs border border-gray-300 rounded px-2 py-1"
+              data-testid="purchase-timeframe-select"
+            >
+              <option value="7">Last 7</option>
+              <option value="14">Last 14</option>
+              <option value="30">Last 30</option>
+            </select>
           </div>
+          <hr />
 
           {/* BODY */}
           <div>
@@ -63,7 +79,7 @@ const CardPurchaseSummary = () => {
             {/* CHART */}
             <ResponsiveContainer width="100%" height={200} className="p-2">
               <AreaChart
-                data={purchaseData}
+                data={filteredPurchaseData}
                 margin={{ top: 0, right: 0, left: -50, bottom: 45 }}
               >
                 <XAxis dataKey="date" tick={false} axisLine={false} />

@@ -243,5 +243,75 @@
     "price": 969.47,
     "rating": 3.66,
     "stockQuantity": 248630
+  },
+  {
+    "productId": "91a43ef8-668a-49d1-80a1-bf5f01886f31",
+    "name": "Wireless Barcode Scanner",
+    "price": 129.99,
+    "rating": 4.62,
+    "stockQuantity": 41200
+  },
+  {
+    "productId": "57fd699a-bf69-47ea-9f62-2d4d769ebf94",
+    "name": "Warehouse Label Printer",
+    "price": 349.0,
+    "rating": 4.34,
+    "stockQuantity": 11980
+  },
+  {
+    "productId": "721a18b5-d26f-404d-9ea9-355548fbd2b2",
+    "name": "Thermal Shipping Labels (500)",
+    "price": 24.5,
+    "rating": 4.81,
+    "stockQuantity": 76300
+  },
+  {
+    "productId": "f1c34479-00a9-4eb8-b75d-55871b6dc760",
+    "name": "Industrial Shelf Rack",
+    "price": 599.95,
+    "rating": 4.41,
+    "stockQuantity": 8700
+  },
+  {
+    "productId": "7675478d-3b66-4c42-a7fc-93fcb86a2715",
+    "name": "RFID Inventory Tags (1000)",
+    "price": 79.0,
+    "rating": 4.19,
+    "stockQuantity": 55200
+  },
+  {
+    "productId": "e3c1c203-a8a2-4394-a7ce-e6ccb6a2e8fb",
+    "name": "Pallet Jack",
+    "price": 289.5,
+    "rating": 4.52,
+    "stockQuantity": 6400
+  },
+  {
+    "productId": "a48fbf7a-b861-4a44-9950-c7d89f7db4c0",
+    "name": "Packaging Tape Case",
+    "price": 31.75,
+    "rating": 4.28,
+    "stockQuantity": 39800
+  },
+  {
+    "productId": "24f655c6-97ab-4579-b79f-ae2cf4269db8",
+    "name": "Smart Weight Scale",
+    "price": 159.95,
+    "rating": 4.46,
+    "stockQuantity": 17200
+  },
+  {
+    "productId": "4a655610-0118-44e3-8f75-5bcaebd16c67",
+    "name": "Inventory Audit Clipboard",
+    "price": 12.99,
+    "rating": 4.11,
+    "stockQuantity": 90500
+  },
+  {
+    "productId": "f0f84f91-e37c-4da2-b510-2a7907f90d2f",
+    "name": "Dock Door Safety Light",
+    "price": 219.0,
+    "rating": 4.57,
+    "stockQuantity": 12400
   }
 ]

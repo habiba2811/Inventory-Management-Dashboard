@@ -19,6 +19,7 @@ interface SidebarLinkProps {
   icon: LucideIcon;
   label: string;
   isCollapsed: boolean;
+  testId: string;
 }
 
 const SidebarLink = ({
@@ -26,26 +27,27 @@ const SidebarLink = ({
   icon: Icon,
   label,
   isCollapsed,
+  testId,
 }: SidebarLinkProps) => {
   const pathname = usePathname();
   const isActive =
     pathname === href || (pathname === '/' && href === '/dashboard');
   return (
-    <Link href={href}>
+    <Link href={href} data-testid={testId}>
       <div
         className={`cursor-pointer flex items-center ${
           isCollapsed ? 'justify-center py-4' : 'justify-start px-8 py-4'
         }
-          hover:text-blue-500 hover:bg-blue-100 gap-3 transation-colors ${
-            isActive ? 'bg-blue-200 text-white' : ''
+          hover:text-blue-500 hover:bg-blue-100 gap-3 transition-colors ${
+            isActive ? 'bg-blue-100 text-blue-700' : ''
           }
         } `}
       >
-        <Icon className="w-6 h-6 !text-gray-700" />
+        <Icon className={`w-6 h-6 ${isActive ? 'text-blue-700' : '!text-gray-700'}`} />
         <span
           className={`${
             isCollapsed ? 'hidden' : 'block'
-          } font-medium text-gray-700`}
+          } font-medium ${isActive ? 'text-blue-700' : 'text-gray-700'}`}
         >
           {label}
         </span>
@@ -67,14 +69,16 @@ const Sidebar = () => {
     isSidebarCollapsed ? 'w-0 md:w-16' : 'w-72 md:w-64'
   } bg-white transition-all duration-300 overflow-hidden h-full shadow-md z-40`;
   return (
-    <div className={sidebarClassNames}>
+    <div className={sidebarClassNames} data-testid="sidebar">
       {/* TOP LOGO */}
       <div
         className={`flex gap-3 justify-between md:justify-normal items-center pt-8 ${
-          isSidebarCollapsed ? 'px-5 :' : 'px-8'
+          isSidebarCollapsed ? 'px-5' : 'px-8'
         }`}
       >
-        <div>logo</div>
+        <div className="w-8 h-8 rounded-lg bg-blue-600 text-white grid place-items-center text-xs font-bold">
+          HH
+        </div>
         <h1
           className={`${
             isSidebarCollapsed ? 'hidden' : 'block'
@@ -97,36 +101,42 @@ const Sidebar = () => {
           icon={Layout}
           label="Dashboard"
           isCollapsed={isSidebarCollapsed}
+          testId="nav-dashboard"
         />
         <SidebarLink
           href="/inventory"
           icon={Archive}
           label="Inventory"
           isCollapsed={isSidebarCollapsed}
+          testId="nav-inventory"
         />
         <SidebarLink
           href="/products"
           icon={Clipboard}
           label="Products"
           isCollapsed={isSidebarCollapsed}
+          testId="nav-products"
         />
         <SidebarLink
           href="/users"
           icon={User}
           label="Users"
           isCollapsed={isSidebarCollapsed}
+          testId="nav-users"
         />
         <SidebarLink
           href="/settings"
           icon={SlidersHorizontal}
           label="Settings"
           isCollapsed={isSidebarCollapsed}
+          testId="nav-settings"
         />
         <SidebarLink
           href="/expenses"
           icon={CircleDollarSign}
           label="Expenses"
           isCollapsed={isSidebarCollapsed}
+          testId="nav-expenses"
         />
       </div>
 

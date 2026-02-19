@@ -3,6 +3,8 @@
 import { useGetProductsQuery } from '@/app/state/api';
 import Header from '@/app/(components)/Header';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import { useMemo } from 'react';
+import { useAppSelector } from '@/app/redux';
 
 const columns: GridColDef[] = [
   { field: 'productId', headerName: 'ID', width: 90 },
@@ -30,7 +32,21 @@ const columns: GridColDef[] = [
 ];
 
 const Inventory = () => {
+  const globalSearchTerm = useAppSelector(
+    (state) => state.global.globalSearchTerm ?? ''
+  );
   const { data: products, isError, isLoading } = useGetProductsQuery();
+  const filteredProducts = useMemo(() => {
+    if (!products) return [];
+    if (!globalSearchTerm) return products;
+    const needle = globalSearchTerm.toLowerCase();
+    return products.filter(
+      (product) =>
+        product.name.toLowerCase().includes(needle) ||
+        product.productId.toLowerCase().includes(needle)
+    );
+  }, [products, globalSearchTerm]);
+
   if (isLoading) {
     return <div className="py-4">Loading...</div>;
   }
@@ -42,14 +58,19 @@ const Inventory = () => {
     );
   }
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col" data-testid="inventory-page">
       <Header name="Inventory" />
       <DataGrid
-        rows={products}
+        rows={filteredProducts}
         columns={columns}
         getRowId={(row) => row.productId}
         checkboxSelection
-        className="bg-white shadow roundedlg border-gray-200 mt-5 !text-gray-700"
+        pageSizeOptions={[10, 20, 50]}
+        initialState={{
+          pagination: { paginationModel: { pageSize: 10, page: 0 } },
+        }}
+        className="bg-white shadow rounded-lg border-gray-200 mt-5 !text-gray-700"
+        data-testid="inventory-grid"
       />
     </div>
   );

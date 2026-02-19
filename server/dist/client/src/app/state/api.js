@@ -1,9 +1,11 @@
 "use strict";
+var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.useGetExpenseByCategoryQuery = exports.useGetUsersQuery = exports.useCreateProductMutation = exports.useGetProductsQuery = exports.useGetDashboardMetricsQuery = exports.api = void 0;
 const react_1 = require("@reduxjs/toolkit/query/react");
+const apiBaseUrl = ((_a = process.env.NEXT_PUBLIC_API_BASE_URL) === null || _a === void 0 ? void 0 : _a.trim()) || 'http://localhost:3001';
 exports.api = (0, react_1.createApi)({
-    baseQuery: (0, react_1.fetchBaseQuery)({ baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL }),
+    baseQuery: (0, react_1.fetchBaseQuery)({ baseUrl: apiBaseUrl }),
     reducerPath: 'api',
     tagTypes: ['DashboardMetrics', 'Products', 'Users', 'Expenses'],
     endpoints: (build) => ({

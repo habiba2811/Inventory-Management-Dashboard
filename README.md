@@ -8,11 +8,15 @@
 ![AWS](https://img.shields.io/badge/AWS-Deployment-lightgrey)
 ![Version](https://img.shields.io/badge/Version-1.0.0-orange)
 
-This project showcases a **Full Stack Inventory Management Dashboard Application** that provides a seamless user experience with rich data handling on the frontend and a powerful backend for database and API management. It is built using **Next.js** for the frontend and **Node.js** for the backend.
+This project is a full-stack inventory management dashboard built with **Next.js** (frontend) and **Node.js + Prisma** (backend), with Terraform configuration for AWS infrastructure provisioning.
 
-State management is handled using **Redux Toolkit** and **Redux Toolkit Query** for efficient data fetching and state synchronization. The backend utilizes **Prisma** ORM for database management.
+It now includes richer seeded data, improved reliability, and expanded UI interactivity designed for end-to-end automation testing.
 
-Additionally, infrastructure management and deployment are automated using **Terraform**, allowing for easy provisioning of resources on **AWS**.
+## Demo Screenshots
+
+![Dashboard Demo](docs/screenshots/dashboard-demo.png)
+![Expenses Demo](docs/screenshots/expenses-demo.png)
+![Products Demo](docs/screenshots/products-demo.png)
 
 ## Technologies Used
 
@@ -21,3 +25,71 @@ Additionally, infrastructure management and deployment are automated using **Ter
 - **Backend**: Node.js, Prisma ORM
 - **Infrastructure as Code**: Terraform
 - **Cloud Provider**: AWS (Amazon Web Services)
+
+## Features
+
+- Interactive dashboard with charts and summaries.
+- Inventory, products, users, and expenses management views.
+- Global search across key data tables.
+- Automation-friendly UI hooks for E2E testing.
+
+## Local Run Guide
+
+### 1. Start PostgreSQL (Docker)
+
+```powershell
+docker run --name inventory-postgres -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=inventory_db -p 5432:5432 -d postgres:16
+```
+
+### 2. Configure Environment Variables
+
+Create `server/.env`:
+
+```env
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/inventory_db?schema=public"
+PORT=3001
+```
+
+Create `client/.env.local`:
+
+```env
+NEXT_PUBLIC_API_BASE_URL=http://localhost:3001
+```
+
+### 3. Start Backend
+
+```powershell
+cd server
+npm install
+npx prisma generate
+npx prisma migrate deploy
+npm run seed
+npm run dev
+```
+
+### 4. Start Frontend
+
+```powershell
+cd client
+npm install
+npm run dev
+```
+
+Open: `http://localhost:3000`
+
+## Automation-Friendly Selectors
+
+Examples of key selectors added for E2E/UI testing:
+
+- `global-search-input`
+- `toggle-dark-mode`
+- `notifications-toggle`
+- `nav-dashboard`, `nav-products`, `nav-inventory`, `nav-users`, `nav-expenses`, `nav-settings`
+- `sales-timeframe-select`
+- `purchase-timeframe-select`
+- `popular-products-sort`
+- `expenses-category-filter`
+- `expenses-reset-filters`
+- `open-create-product-modal`
+- `submit-create-product`
+- `save-settings`, `reset-settings`

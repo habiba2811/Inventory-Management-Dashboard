@@ -21,12 +21,12 @@ const mockSettings: UserSetting[] = [
   },
   {
     label: 'Notification',
-    value: 'true',
+    value: true,
     type: 'toggle',
   },
   {
     label: 'Dark Mode',
-    value: 'false',
+    value: false,
     type: 'toggle',
   },
   {
@@ -37,6 +37,7 @@ const mockSettings: UserSetting[] = [
 ];
 const Settings = () => {
   const [userSettings, setUserSettings] = useState<UserSetting[]>(mockSettings);
+  const [statusMessage, setStatusMessage] = useState('');
 
   const handleToggleChange = (index: number) => {
     const settingsCopy = [...userSettings];
@@ -44,10 +45,15 @@ const Settings = () => {
     setUserSettings(settingsCopy);
   };
   return (
-    <div className="w-full">
+    <div className="w-full" data-testid="settings-page">
       <Header name="User Settings" />
-      <div className="overflow-x-auto mt-5 shadow--md">
-        <table className="min-w-full bg-whit rounded-lg">
+      {statusMessage && (
+        <div className="mt-3 rounded-md border border-green-200 bg-green-50 px-3 py-2 text-sm text-green-700" data-testid="settings-status">
+          {statusMessage}
+        </div>
+      )}
+      <div className="overflow-x-auto mt-5 shadow-md">
+        <table className="min-w-full bg-white rounded-lg">
           <thead className="bg-gray-800 text-white">
             <tr>
               <th className="text-left px-4 py-3 uppercase font-semibold text-sm">
@@ -60,7 +66,7 @@ const Settings = () => {
           </thead>
           <tbody>
             {userSettings.map((setting, index) => (
-              <tr className="hhover:bg-blur-50" key={setting.label}>
+              <tr className="hover:bg-blue-50" key={setting.label}>
                 <td className="px-4 py-2">{setting.label}</td>
                 <td className="px-4 py-2">
                   {setting.type === 'toggle' ? (
@@ -70,6 +76,7 @@ const Settings = () => {
                         className="sr-only peer"
                         checked={setting.value as boolean}
                         onChange={() => handleToggleChange(index)}
+                        data-testid={`settings-toggle-${setting.label.toLowerCase().replace(/\s+/g, '-')}`}
                       />
                       <div
                         className="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-blue-400 peer-focus:ring-4 
@@ -89,6 +96,7 @@ const Settings = () => {
                         settingsCopy[index].value = e.target.value;
                         setUserSettings(settingsCopy);
                       }}
+                      data-testid={`settings-input-${setting.label.toLowerCase().replace(/\s+/g, '-')}`}
                     />
                   )}
                 </td>
@@ -96,6 +104,25 @@ const Settings = () => {
             ))}
           </tbody>
         </table>
+        <div className="flex gap-3 p-4 border-t bg-gray-50">
+          <button
+            className="px-4 py-2 rounded bg-blue-600 text-white text-sm hover:bg-blue-700"
+            onClick={() => setStatusMessage('Settings saved locally.')}
+            data-testid="save-settings"
+          >
+            Save
+          </button>
+          <button
+            className="px-4 py-2 rounded bg-gray-200 text-gray-800 text-sm hover:bg-gray-300"
+            onClick={() => {
+              setUserSettings(mockSettings);
+              setStatusMessage('Settings reset to defaults.');
+            }}
+            data-testid="reset-settings"
+          >
+            Reset
+          </button>
+        </div>
       </div>
     </div>
   );

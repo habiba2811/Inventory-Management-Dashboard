@@ -19,10 +19,11 @@ const getExpenseByCategory = (req, res) => __awaiter(void 0, void 0, void 0, fun
                 date: 'desc',
             },
         });
-        const expenseByCategory = expenseByCategoryRaw.map((item) => { });
+        const expenseByCategorySummary = expenseByCategoryRaw.map((item) => (Object.assign(Object.assign({}, item), { amount: item.amount.toString() })));
+        res.json(expenseByCategorySummary);
     }
     catch (error) {
-        res.status(500).json({ message: 'Error retrieving dashboard metrics' });
+        res.status(500).json({ message: 'Error retrieving expense by category' });
     }
 });
 exports.getExpenseByCategory = getExpenseByCategory;

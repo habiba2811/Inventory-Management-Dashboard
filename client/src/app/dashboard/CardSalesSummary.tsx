@@ -1,6 +1,6 @@
 import { useGetDashboardMetricsQuery } from '@/app/state/api';
 import { TrendingUp } from 'lucide-react';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   Bar,
   BarChart,
@@ -12,22 +12,28 @@ import {
 } from 'recharts';
 
 const CardSalesSummary = () => {
-  const { data, isLoading, isError } = useGetDashboardMetricsQuery();
+  const { data, isLoading, isError, refetch } = useGetDashboardMetricsQuery();
   const salesData = data?.salesSummary || [];
 
   const [timeframe, setTimeframe] = useState('weekly');
 
+  const filteredSalesData = useMemo(() => {
+    if (timeframe === 'daily') return salesData.slice(-7);
+    if (timeframe === 'weekly') return salesData.slice(-14);
+    return salesData.slice(-30);
+  }, [salesData, timeframe]);
+
   const totalValueSum =
-    salesData.reduce((acc, curr) => acc + curr.totalValue, 0) || 0;
+    filteredSalesData.reduce((acc, curr) => acc + curr.totalValue, 0) || 0;
 
   const averageChangePercentage =
-    salesData.reduce((acc, curr, _, array) => {
+    filteredSalesData.reduce((acc, curr, _, array) => {
       return acc + curr.changePercentage! / array.length;
     }, 0) || 0;
 
-  const highestValueData = salesData.reduce((acc, curr) => {
+  const highestValueData = filteredSalesData.reduce((acc, curr) => {
     return acc.totalValue > curr.totalValue ? acc : curr;
-  }, salesData[0] || {});
+  }, filteredSalesData[0] || {});
 
   const highestValueDate = highestValueData.date
     ? new Date(highestValueData.date).toLocaleDateString('en-US', {
@@ -38,11 +44,22 @@ const CardSalesSummary = () => {
     : 'N/A';
 
   if (isError) {
-    return <div className="m-5">Failed to fetch data</div>;
+    return (
+      <div className="m-5" data-testid="sales-fetch-error">
+        <p>Failed to fetch data</p>
+        <button
+          onClick={() => refetch()}
+          className="mt-2 px-3 py-1 text-xs rounded bg-blue-600 text-white hover:bg-blue-700"
+          data-testid="sales-retry"
+        >
+          Retry
+        </button>
+      </div>
+    );
   }
 
   return (
-    <div className="row-span-3 xl:row-span-6 bg-white shadow-md rounded-2xl flex flex-col justify-between">
+    <div className="row-span-3 xl:row-span-6 bg-white shadow-md rounded-2xl flex flex-col justify-between" data-testid="sales-summary-card">
       {isLoading ? (
         <div className="m-5">Loading...</div>
       ) : (
@@ -79,16 +96,17 @@ const CardSalesSummary = () => {
                 onChange={(e) => {
                   setTimeframe(e.target.value);
                 }}
+                data-testid="sales-timeframe-select"
               >
-                <option value="daily">Daily</option>
-                <option value="weekly">Weekly</option>
-                <option value="monthly">Monthly</option>
+                <option value="daily">Last 7</option>
+                <option value="weekly">Last 14</option>
+                <option value="monthly">Last 30</option>
               </select>
             </div>
             {/* CHART */}
             <ResponsiveContainer width="100%" height={350} className="px-7">
               <BarChart
-                data={salesData}
+                data={filteredSalesData}
                 margin={{ top: 0, right: 0, left: -25, bottom: 0 }}
               >
                 <CartesianGrid strokeDasharray="" vertical={false} />
@@ -134,7 +152,7 @@ const CardSalesSummary = () => {
           <div>
             <hr />
             <div className="flex justify-between items-center mt-6 text-sm px-7 mb-4">
-              <p>{salesData.length || 0} days</p>
+              <p data-testid="sales-points-count">{filteredSalesData.length || 0} data points</p>
               <p className="text-sm">
                 Highest Sales Date:{' '}
                 <span className="font-bold">{highestValueDate}</span>

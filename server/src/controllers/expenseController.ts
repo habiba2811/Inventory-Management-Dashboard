@@ -1,4 +1,3 @@
-import { ExpenseByCategorySummary } from './../../../client/src/app/state/api';
 import { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 
@@ -14,12 +13,12 @@ export const getExpenseByCategory = async (
         date: 'desc',
       },
     });
-    const ExpenseByCategorySummary = expenseByCategoryRaw.map((item) => ({
+    const expenseByCategorySummary = expenseByCategoryRaw.map((item) => ({
       ...item,
       amount: item.amount.toString(),
     }));
 
-    res.json(ExpenseByCategorySummary);
+    res.json(expenseByCategorySummary);
   } catch (error) {
     res.status(500).json({ message: 'Error retrieving expense by category' });
   }

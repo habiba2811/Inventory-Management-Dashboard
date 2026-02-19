@@ -1,10 +1,12 @@
 'use client';
 import { useCreateProductMutation, useGetProductsQuery } from '@/app/state/api';
 import { PlusCircleIcon, SearchIcon } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Header from '@/app/(components)/Header';
 import Rating from '@/app/(components)/Rating';
 import CreateProductModel from './CreateProductModel';
+import { useAppDispatch, useAppSelector } from '@/app/redux';
+import { setGlobalSearchTerm } from '@/app/state';
 
 type ProductFormData = {
   name: string;
@@ -14,8 +16,17 @@ type ProductFormData = {
 };
 
 const Products = () => {
-  const [searchTerm, setSearchTerm] = useState('');
+  const dispatch = useAppDispatch();
+  const globalSearchTerm = useAppSelector(
+    (state) => state.global.globalSearchTerm ?? ''
+  );
+  const [searchTerm, setSearchTerm] = useState(globalSearchTerm);
   const [isModelOpen, setIsModelOpen] = useState(false);
+  const [createError, setCreateError] = useState('');
+
+  useEffect(() => {
+    setSearchTerm(globalSearchTerm);
+  }, [globalSearchTerm]);
 
   const {
     data: products,
@@ -25,7 +36,12 @@ const Products = () => {
 
   const [createProduct] = useCreateProductMutation();
   const handleCreateProduct = async (productData: ProductFormData) => {
-    await createProduct(productData);
+    try {
+      await createProduct(productData).unwrap();
+      setCreateError('');
+    } catch {
+      setCreateError('Unable to create product. Please try again.');
+    }
   };
 
   if (isLoading) {
@@ -39,7 +55,7 @@ const Products = () => {
   }
 
   return (
-    <div className="mx-auto pb-5 w-full">
+    <div className="mx-auto pb-5 w-full" data-testid="products-page">
       {/* SEARCH BAR */}
       <div className="mb-6">
         <div className="flex items-center border-2 border-gray-200 rounded">
@@ -48,7 +64,11 @@ const Products = () => {
             className="w-full py-2 px-4 rounded bg-white"
             placeholder="Search Products ..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              dispatch(setGlobalSearchTerm(e.target.value));
+            }}
+            data-testid="products-search-input"
           />
         </div>
       </div>
@@ -58,11 +78,17 @@ const Products = () => {
         <button
           className="flex items-center bg-blue-500 hover:bg-blue-700 text-gray-200 font-bold py-2 px-4 rounded"
           onClick={() => setIsModelOpen(true)}
+          data-testid="open-create-product-modal"
         >
           <PlusCircleIcon className="w-5 h-5 mr-2 !text-gray-200" /> Create
           Product
         </button>
       </div>
+      {createError && (
+        <div className="mb-4 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-600">
+          {createError}
+        </div>
+      )}
 
       {/* BODY PRODUCTS LIST */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 justify-between">
@@ -73,9 +99,12 @@ const Products = () => {
             <div
               key={product.productId}
               className="border shadow rounded-md p-4 max-w-full w-full mx-auto"
+              data-testid="product-card"
             >
               <div className="flex flex-col items-center">
-                img
+                <div className="mb-3 w-12 h-12 rounded-full bg-blue-100 text-blue-700 grid place-items-center text-sm font-bold">
+                  {product.name.slice(0, 2).toUpperCase()}
+                </div>
                 <h3 className="text-lg text-gray-900 font-semibold">
                   {product.name}
                 </h3>

@@ -1,5 +1,4 @@
 import React, { FormEvent, useState, ChangeEvent } from 'react';
-import { v4 } from 'uuid';
 import Header from '@/app/(components)/Header';
 type ProductFormData = {
   name: string;
@@ -19,13 +18,13 @@ const CreateProductModel = ({
   onClose,
   onCreate,
 }: CreateProductModelProps) => {
-  const [formData, setFormData] = useState({
-    productId: v4(),
+  const initialFormState = {
     name: '',
     price: 0,
     stockQuantity: 0,
     rating: 0,
-  });
+  };
+  const [formData, setFormData] = useState(initialFormState);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -40,6 +39,7 @@ const CreateProductModel = ({
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     onCreate(formData);
+    setFormData(initialFormState);
     onClose();
   };
 
@@ -49,7 +49,7 @@ const CreateProductModel = ({
   const inputCssStyle =
     'block w-full mb-2 p-2 border-gray-500 border-2 rounded-md';
   return (
-    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-20">
+    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-20" data-testid="create-product-modal">
       <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
         <Header name="Create New Product" />
         <form onSubmit={handleSubmit} className="mt-5">
@@ -65,6 +65,7 @@ const CreateProductModel = ({
             value={formData.name}
             className={inputCssStyle}
             required
+            data-testid="create-product-name"
           />
 
           {/* PRICE */}
@@ -79,6 +80,7 @@ const CreateProductModel = ({
             value={formData.price}
             className={inputCssStyle}
             required
+            data-testid="create-product-price"
           />
           {/* STOCK QUANTITY */}
           <label htmlFor="stockQuantity" className={labelCssStyles}>
@@ -92,6 +94,7 @@ const CreateProductModel = ({
             value={formData.stockQuantity}
             className={inputCssStyle}
             required
+            data-testid="create-product-stock"
           />
           {/* RATING */}
           <label htmlFor="rating" className={labelCssStyles}>
@@ -105,11 +108,13 @@ const CreateProductModel = ({
             value={formData.rating}
             className={inputCssStyle}
             required
+            data-testid="create-product-rating"
           />
           {/* CREATE ACTIONS */}
           <button
             type="submit"
             className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-700"
+            data-testid="submit-create-product"
           >
             Create
           </button>
@@ -118,6 +123,7 @@ const CreateProductModel = ({
             onClick={onClose}
             type="button"
             className="ml-2 px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-700"
+            data-testid="cancel-create-product"
           >
             Cancel
           </button>

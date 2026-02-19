@@ -10,8 +10,6 @@
 
 This project is a full-stack inventory management dashboard built with **Next.js** (frontend) and **Node.js + Prisma** (backend), with Terraform configuration for AWS infrastructure provisioning.
 
-It now includes richer seeded data, improved reliability, and expanded UI interactivity designed for end-to-end automation testing.
-
 ## Demo Screenshots
 
 ![Dashboard Demo](docs/screenshots/dashboard-demo.png)
@@ -31,8 +29,7 @@ It now includes richer seeded data, improved reliability, and expanded UI intera
 - Interactive dashboard with charts and summaries.
 - Inventory, products, users, and expenses management views.
 - Global search across key data tables.
-- Automation-friendly UI hooks for E2E testing.
-
+- 
 ## Local Run Guide
 
 ### 1. Start PostgreSQL (Docker)
@@ -76,20 +73,5 @@ npm run dev
 ```
 
 Open: `http://localhost:3000`
-
-## Automation-Friendly Selectors
-
-Examples of key selectors added for E2E/UI testing:
-
-- `global-search-input`
-- `toggle-dark-mode`
-- `notifications-toggle`
-- `nav-dashboard`, `nav-products`, `nav-inventory`, `nav-users`, `nav-expenses`, `nav-settings`
-- `sales-timeframe-select`
-- `purchase-timeframe-select`
-- `popular-products-sort`
-- `expenses-category-filter`
-- `expenses-reset-filters`
-- `open-create-product-modal`
 - `submit-create-product`
 - `save-settings`, `reset-settings`

@@ -73,5 +73,49 @@ npm run dev
 ```
 
 Open: `http://localhost:3000`
-- `submit-create-product`
-- `save-settings`, `reset-settings`
+
+## Deploy (Render, Easiest Full-Stack)
+
+
+### 1. Create Render Services
+
+- **Backend (Node/Express)**
+  - Build Command:
+    ```
+    cd server
+    npm install
+    npx prisma generate
+    npx prisma migrate deploy
+    npm run build
+    ```
+  - Start Command:
+    ```
+    cd server
+    npm run start
+    ```
+  - Environment:
+    - `DATABASE_URL` = from Render Postgres
+    - `PORT` = 3001 (Render injects `PORT` automatically)
+
+- **Frontend (Next.js)**
+  - Build Command:
+    ```
+    cd client
+    npm install
+    npm run build
+    ```
+  - Start Command:
+    ```
+    cd client
+    npm run start
+    ```
+  - Environment:
+    - `NEXT_PUBLIC_API_BASE_URL` = your Render backend URL
+
+- **Postgres**
+  - Create a Render Postgres database (free tier).
+  - Copy its connection string into the backend `DATABASE_URL`.
+
+### 2. Optional Render Blueprint
+
+Use the included `render.yaml` to create everything in one click.

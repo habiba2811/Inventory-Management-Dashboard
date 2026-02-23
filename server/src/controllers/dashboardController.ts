@@ -8,39 +8,64 @@ export const getDashboardMetrics = async (
   res: Response
 ): Promise<void> => {
   try {
-    const popularProducts = await prisma.products.findMany({
-      take: 15,
-      orderBy: {
-        stockQuantity: 'desc',
-      },
-    });
-    const salesSummary = await prisma.salesSummary.findMany({
-      take: 5,
-      orderBy: {
-        date: 'desc',
-      },
-    });
+    const safeQuery = async <T>(label: string, query: Promise<T>, fallback: T) => {
+      try {
+        return await query;
+      } catch (error) {
+        console.error(`Dashboard query failed for ${label}:`, error);
+        return fallback;
+      }
+    };
 
-    const purchaseSummary = await prisma.purchaseSummary.findMany({
-      take: 5,
-      orderBy: {
-        date: 'desc',
-      },
-    });
-
-    const expenseSummary = await prisma.expenseSummary.findMany({
-      take: 5,
-      orderBy: {
-        date: 'desc',
-      },
-    });
-    const expenseByCategorySummaryRaw = await prisma.expenseByCategory.findMany(
-      {
+    const popularProducts = await safeQuery(
+      'products',
+      prisma.products.findMany({
+        take: 15,
+        orderBy: {
+          stockQuantity: 'desc',
+        },
+      }),
+      []
+    );
+    const salesSummary = await safeQuery(
+      'salesSummary',
+      prisma.salesSummary.findMany({
         take: 5,
         orderBy: {
           date: 'desc',
         },
-      }
+      }),
+      []
+    );
+    const purchaseSummary = await safeQuery(
+      'purchaseSummary',
+      prisma.purchaseSummary.findMany({
+        take: 5,
+        orderBy: {
+          date: 'desc',
+        },
+      }),
+      []
+    );
+    const expenseSummary = await safeQuery(
+      'expenseSummary',
+      prisma.expenseSummary.findMany({
+        take: 5,
+        orderBy: {
+          date: 'desc',
+        },
+      }),
+      []
+    );
+    const expenseByCategorySummaryRaw = await safeQuery(
+      'expenseByCategory',
+      prisma.expenseByCategory.findMany({
+        take: 5,
+        orderBy: {
+          date: 'desc',
+        },
+      }),
+      []
     );
     const expenseByCategorySummary = expenseByCategorySummaryRaw.map(
       (item) => ({

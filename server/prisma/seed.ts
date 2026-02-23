@@ -9,7 +9,8 @@ async function deleteAllData(orderedFileNames: string[]) {
     return modelName.charAt(0).toUpperCase() + modelName.slice(1);
   });
 
-  for (const modelName of modelNames) {
+  // Delete in reverse dependency order (children first) to satisfy FKs.
+  for (const modelName of [...modelNames].reverse()) {
     const model: any = prisma[modelName as keyof typeof prisma];
     if (model) {
       await model.deleteMany({});

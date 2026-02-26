@@ -18,6 +18,7 @@ const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.json(users);
     }
     catch (error) {
+        console.error('Error retrieving users:', error);
         res.status(500).json({ message: 'Error retriveing users' });
     }
 });

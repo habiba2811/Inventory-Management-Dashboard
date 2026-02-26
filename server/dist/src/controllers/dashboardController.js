@@ -14,36 +14,45 @@ const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
 const getDashboardMetrics = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const popularProducts = yield prisma.products.findMany({
+        const safeQuery = (label, query, fallback) => __awaiter(void 0, void 0, void 0, function* () {
+            try {
+                return yield query;
+            }
+            catch (error) {
+                console.error(`Dashboard query failed for ${label}:`, error);
+                return fallback;
+            }
+        });
+        const popularProducts = yield safeQuery('products', prisma.products.findMany({
             take: 15,
             orderBy: {
                 stockQuantity: 'desc',
             },
-        });
-        const salesSummary = yield prisma.salesSummary.findMany({
+        }), []);
+        const salesSummary = yield safeQuery('salesSummary', prisma.salesSummary.findMany({
             take: 5,
             orderBy: {
                 date: 'desc',
             },
-        });
-        const purchaseSummary = yield prisma.purchaseSummary.findMany({
+        }), []);
+        const purchaseSummary = yield safeQuery('purchaseSummary', prisma.purchaseSummary.findMany({
             take: 5,
             orderBy: {
                 date: 'desc',
             },
-        });
-        const expenseSummary = yield prisma.expenseSummary.findMany({
+        }), []);
+        const expenseSummary = yield safeQuery('expenseSummary', prisma.expenseSummary.findMany({
             take: 5,
             orderBy: {
                 date: 'desc',
             },
-        });
-        const expenseByCategorySummaryRaw = yield prisma.expenseByCategory.findMany({
+        }), []);
+        const expenseByCategorySummaryRaw = yield safeQuery('expenseByCategory', prisma.expenseByCategory.findMany({
             take: 5,
             orderBy: {
                 date: 'desc',
             },
-        });
+        }), []);
         const expenseByCategorySummary = expenseByCategorySummaryRaw.map((item) => (Object.assign(Object.assign({}, item), { amount: item.amount.toString() })));
         res.json({
             popularProducts,
@@ -54,6 +63,7 @@ const getDashboardMetrics = (req, res) => __awaiter(void 0, void 0, void 0, func
         });
     }
     catch (error) {
+        console.error('Error retrieving dashboard metrics:', error);
         res.status(500).json({ message: 'Error retrieving dashboard metrics' });
     }
 });

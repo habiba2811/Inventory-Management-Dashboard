@@ -23,6 +23,7 @@ const getExpenseByCategory = (req, res) => __awaiter(void 0, void 0, void 0, fun
         res.json(expenseByCategorySummary);
     }
     catch (error) {
+        console.error('Error retrieving expense by category:', error);
         res.status(500).json({ message: 'Error retrieving expense by category' });
     }
 });

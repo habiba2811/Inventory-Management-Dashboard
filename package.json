@@ -1,0 +1,19 @@
+{
+  "name": "inventory-management-dashboard-workspace",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "install:all": "npm --prefix server install && npm --prefix client install",
+    "db:up": "docker compose up -d db",
+    "db:down": "docker compose down",
+    "db:logs": "docker compose logs -f db",
+    "server:prepare": "npm --prefix server run prisma:prepare",
+    "seed": "npm --prefix server run seed",
+    "dev": "concurrently \"npm --prefix server run dev\" \"npm --prefix client run dev\"",
+    "dev:setup": "npm run db:up && npm run server:prepare && npm run dev",
+    "dev:fresh": "npm run db:up && npm run server:prepare && npm run seed && npm run dev"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}

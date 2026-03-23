@@ -1,4 +1,4 @@
-# Inventory-Management-Dashboard
+# Inventory Management Dashboard
 
 ![Next.js](https://img.shields.io/badge/Next.js-Frontend-blue)
 ![Redux Toolkit](https://img.shields.io/badge/Redux%20Toolkit-State%20Management-purple)
@@ -8,37 +8,37 @@
 ![AWS](https://img.shields.io/badge/AWS-Deployment-lightgrey)
 ![Version](https://img.shields.io/badge/Version-1.0.0-orange)
 
-This project is a full-stack inventory management dashboard built with **Next.js** (frontend) and **Node.js + Prisma** (backend), with Terraform configuration for AWS infrastructure provisioning.
+Full-stack inventory management dashboard with a Next.js frontend, an Express + Prisma backend, and Terraform configuration for infrastructure work.
 
-## Demo Screenshots
+## Stack
+
+- Frontend: Next.js 14, React 18, TypeScript
+- UI: Tailwind CSS, Material UI, Recharts, Lucide
+- State management: Redux Toolkit, RTK Query, Redux Persist
+- Backend: Express, TypeScript, Prisma
+- Database: PostgreSQL
+- Local services: Docker Compose
+- Infrastructure: Terraform
+
+## What It Includes
+
+- Dashboard metrics for sales, purchases, expenses, and popular products
+- Product management with search and product creation
+- Users, inventory, expenses, and settings views
+- PostgreSQL-backed API with Prisma models for products, users, sales, purchases, and expense summaries
+
+```
+
+## Screenshots
 
 ![Dashboard Demo](docs/screenshots/dashboard-demo.png)
 ![Expenses Demo](docs/screenshots/expenses-demo.png)
 ![Products Demo](docs/screenshots/products-demo.png)
-
-## Technologies Used
-
-- **Frontend**: Next.js, Tailwind CSS, Material UI (Data Grid)
-- **State Management**: Redux Toolkit, Redux Toolkit Query
-- **Backend**: Node.js, Prisma ORM
-- **Infrastructure as Code**: Terraform
-- **Cloud Provider**: AWS (Amazon Web Services)
-
-## Features
-
-- Interactive dashboard with charts and summaries.
-- Inventory, products, users, and expenses management views.
-- Global search across key data tables.
-- 
-## Local Run Guide
-
-### 1. Start PostgreSQL (Docker)
-
-```powershell
-docker run --name inventory-postgres -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=inventory_db -p 5432:5432 -d postgres:16
 ```
 
-### 2. Configure Environment Variables
+## Local Setup
+
+### 1. Create environment files
 
 Create `server/.env`:
 
@@ -53,69 +53,30 @@ Create `client/.env.local`:
 NEXT_PUBLIC_API_BASE_URL=http://localhost:3001
 ```
 
-### 3. Start Backend
+### 2. Install dependencies
+
+From the repository root:
 
 ```powershell
-cd server
 npm install
-npx prisma generate
-npx prisma migrate deploy
-npm run seed
-npm run dev
+npm run install:all
 ```
 
-### 4. Start Frontend
+### 3. Start the project
 
 ```powershell
-cd client
-npm install
-npm run dev
+npm run dev:setup
 ```
 
-Open: `http://localhost:3000`
+Open:
 
-## Deploy (Render, Easiest Full-Stack)
+- Frontend: `http://localhost:3000`
+- Backend: `http://localhost:3001`
 
+### 4. Seed demo data
 
-### 1. Create Render Services
+To start with fresh seeded data:
 
-- **Backend (Node/Express)**
-  - Build Command:
-    ```
-    cd server
-    npm install
-    npx prisma generate
-    npx prisma migrate deploy
-    npm run build
-    ```
-  - Start Command:
-    ```
-    cd server
-    npm run start
-    ```
-  - Environment:
-    - `DATABASE_URL` = from Render Postgres
-    - `PORT` = 3001 (Render injects `PORT` automatically)
-
-- **Frontend (Next.js)**
-  - Build Command:
-    ```
-    cd client
-    npm install
-    npm run build
-    ```
-  - Start Command:
-    ```
-    cd client
-    npm run start
-    ```
-  - Environment:
-    - `NEXT_PUBLIC_API_BASE_URL` = your Render backend URL
-
-- **Postgres**
-  - Create a Render Postgres database (free tier).
-  - Copy its connection string into the backend `DATABASE_URL`.
-
-### 2. Optional Render Blueprint
-
-Use the included `render.yaml` to create everything in one click.
+```powershell
+npm run dev:fresh
+```

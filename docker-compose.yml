@@ -25,6 +25,7 @@ services:
     environment:
       DATABASE_URL: postgresql://postgres:postgres@db:5432/inventory_db?schema=public
       PORT: 3001
+      JWT_SECRET: supersecret_inventory_jwt_key
     ports:
       - "3001:3001"
   client:

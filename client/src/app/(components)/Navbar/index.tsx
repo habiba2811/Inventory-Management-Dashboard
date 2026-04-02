@@ -4,22 +4,31 @@ import {
   setGlobalSearchTerm,
   setIsDarkMode,
   setIsSidebarCollapsed,
+  logout,
 } from '@/app/state';
-import { Settings, Bell, Menu, Sun, Moon, Search, X } from 'lucide-react';
+import { Settings, Bell, Menu, Sun, Moon, Search, X, LogOut } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 const Navbar = () => {
   const dispatch = useAppDispatch();
-  const isSidebarCollapsed = useAppSelector(
-    (state) => state.global.isSidebarCollapsed
-  );
+  const router = useRouter();
+  const isSidebarCollapsed = useAppSelector((state) => state.global.isSidebarCollapsed);
   const isDarkMode = useAppSelector((state) => state.global.isDarkMode);
-  const globalSearchTerm = useAppSelector(
-    (state) => state.global.globalSearchTerm ?? ''
-  );
+  const globalSearchTerm = useAppSelector((state) => state.global.globalSearchTerm ?? '');
+  const currentUser = useAppSelector((state) => state.global.currentUser);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const [notificationCount, setNotificationCount] = useState(3);
+
+  const handleLogout = () => {
+    dispatch(logout());
+    router.push('/login');
+  };
+
+  const initials = currentUser?.name
+    ? currentUser.name.split(' ').map((n) => n[0]).join('').toUpperCase().slice(0, 2)
+    : 'U';
 
   const toggleSidebar = () => {
     dispatch(setIsSidebarCollapsed(!isSidebarCollapsed));
@@ -125,12 +134,21 @@ const Navbar = () => {
             )}
           </div>
           <hr className="w-0 h-7 border border-solid border-l border-gray-300 mx-3" />
-          <div className="flex items-center gap-3 cursor-pointer" data-testid="profile-chip">
+          <div className="flex items-center gap-3" data-testid="profile-chip">
             <div className="w-9 h-9 rounded-full bg-blue-600 text-white grid place-items-center text-xs font-bold">
-              HB
+              {initials}
             </div>
-            <span className="font-semibold">Habiba</span>
+            <span className="font-semibold">{currentUser?.name ?? ''}</span>
           </div>
+          <button
+            onClick={handleLogout}
+            className="px-3 py-2 bg-gray-100 rounded-lg hover:bg-red-100 hover:text-red-600 transition flex items-center gap-1 text-sm text-gray-600"
+            aria-label="Logout"
+            data-testid="logout-button"
+          >
+            <LogOut size={16} />
+            Logout
+          </button>
         </div>
         <Link href="/settings" data-testid="navbar-settings-link">
           <Settings className="cursor-pointer text-gray-500" size={24} />

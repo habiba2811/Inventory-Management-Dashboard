@@ -7,10 +7,12 @@ import morgan from 'morgan';
 
 /* ROUTE IMPORTS */
 
+import authRoutes from './routes/authRoutes';
 import dashboardRoutes from './routes/dashboardRoutes';
 import productRoutes from './routes/productRoutes';
 import userRoutes from './routes/userRoutes';
 import expenseRoutes from './routes/expenseRoutes';
+import { requireAuth } from './middleware/authMiddleware';
 
 /* CONFIGURATIONS */
 
@@ -26,10 +28,12 @@ app.use(cors());
 /* ROUTES */
 
 app.get('/health', (_req, res) => res.json({ status: 'ok' }));
-app.use('/dashboard', dashboardRoutes);
-app.use('/products', productRoutes);
-app.use('/users', userRoutes);
-app.use('/expenses', expenseRoutes);
+app.use('/auth', authRoutes);
+
+app.use('/dashboard', requireAuth, dashboardRoutes);
+app.use('/products', requireAuth, productRoutes);
+app.use('/users', requireAuth, userRoutes);
+app.use('/expenses', requireAuth, expenseRoutes);
 
 /*  SERVER */
 

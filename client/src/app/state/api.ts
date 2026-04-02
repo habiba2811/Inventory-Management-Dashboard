@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import type { RootState } from '@/app/redux';
 
 export interface Product {
   productId: string;
@@ -56,14 +57,34 @@ export interface User {
   email: string;
 }
 
+export interface AuthResponse {
+  token: string;
+  user: { id: string; email: string; name: string };
+}
+
 const apiBaseUrl =
   process.env.NEXT_PUBLIC_API_BASE_URL?.trim() || 'http://localhost:3001';
 
 export const api = createApi({
-  baseQuery: fetchBaseQuery({ baseUrl: apiBaseUrl }),
+  baseQuery: fetchBaseQuery({
+    baseUrl: apiBaseUrl,
+    prepareHeaders: (headers, { getState }) => {
+      const token = (getState() as RootState).global.token;
+      if (token) {
+        headers.set('Authorization', `Bearer ${token}`);
+      }
+      return headers;
+    },
+  }),
   reducerPath: 'api',
   tagTypes: ['DashboardMetrics', 'Products', 'Users', 'Expenses'],
   endpoints: (build) => ({
+    login: build.mutation<AuthResponse, { email: string; password: string }>({
+      query: (body) => ({ url: '/auth/login', method: 'POST', body }),
+    }),
+    register: build.mutation<AuthResponse, { name: string; email: string; password: string }>({
+      query: (body) => ({ url: '/auth/register', method: 'POST', body }),
+    }),
     getDashboardMetrics: build.query<DashboardMetrics, void>({
       query: () => '/dashboard',
       providesTags: ['DashboardMetrics'],
@@ -95,6 +116,8 @@ export const api = createApi({
 });
 
 export const {
+  useLoginMutation,
+  useRegisterMutation,
   useGetDashboardMetricsQuery,
   useGetProductsQuery,
   useCreateProductMutation,

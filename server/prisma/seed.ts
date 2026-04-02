@@ -38,6 +38,12 @@ async function main() {
     'expenseByCategory.json',
   ];
 
+  const existingProducts = await prisma.products.count();
+  if (existingProducts > 0) {
+    console.log('Database already has data, skipping seed.');
+    return;
+  }
+
   await deleteAllData(orderedFileNames);
 
   for (const fileName of orderedFileNames) {

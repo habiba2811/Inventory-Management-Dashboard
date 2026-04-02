@@ -20,7 +20,7 @@ export const getProducts = async (
     res.json(products);
   } catch (error) {
     console.error('Error retrieving products:', error);
-    res.status(500).json({ message: 'Error retriveing products' });
+    res.status(500).json({ message: 'Error retrieving products' });
   }
 };
 export const createProduct = async (

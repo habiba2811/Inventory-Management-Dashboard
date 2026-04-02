@@ -25,10 +25,11 @@ app.use(cors());
 
 /* ROUTES */
 
-app.use('/dashboard', dashboardRoutes); //http://localhost:3000/dashboard
-app.use('/products', productRoutes); //http://localhost:3000/products
-app.use('/users', userRoutes); //http://localhost:3000/users
-app.use('/expenses', expenseRoutes); //http://localhost:3000/expenses
+app.get('/health', (_req, res) => res.json({ status: 'ok' }));
+app.use('/dashboard', dashboardRoutes);
+app.use('/products', productRoutes);
+app.use('/users', userRoutes);
+app.use('/expenses', expenseRoutes);
 
 /*  SERVER */
 
